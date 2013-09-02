@@ -73,9 +73,9 @@ namespace ProcessRunner
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="ProcessRunner.ProcessOptions"/> initialised with <see cref="ExeFile" />.
+        /// Creates a new instance of <see cref="ProcessOptions"/> initialised with <see cref="ExeFile" />.
         /// </summary>
-        /// <returns>The new <see cref="ProcessRunner.ProcessOptions"/></returns>
+        /// <returns>The new <see cref="ProcessOptions"/></returns>
         protected virtual ProcessOptions CreateProcessOptions()
         {
             return new ProcessOptions(ExeFile);

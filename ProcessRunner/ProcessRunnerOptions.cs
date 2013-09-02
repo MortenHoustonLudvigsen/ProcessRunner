@@ -42,13 +42,13 @@ namespace ProcessRunner
         /// <summary>
         /// This method gets called to set options for the process
         /// </summary>
-        /// <param name="processOptions">A <see cref="ProcessRunner.ProcessOptions"/> object, that contains the options for the process</param>
+        /// <param name="processOptions">A <see cref="ProcessOptions"/> object, that contains the options for the process</param>
         public abstract void SetProcessOptions(ProcessOptions processOptions);
 
         /// <summary>
         /// This method gets called to add extra command line arguments by calling <see cref="OtherArguments"/> if it is set.
         /// </summary>
-        /// <param name="processOptions">A <see cref="ProcessRunner.ProcessOptions"/> object, that contains the options for the process</param>
+        /// <param name="processOptions">A <see cref="ProcessOptions"/> object, that contains the options for the process</param>
         /// <remarks><para>This method will typically be called from <see cref="SetProcessOptions"/> in derived classes.</para></remarks>
         protected void AddOtherArguments(ProcessOptions processOptions)
         {
@@ -61,7 +61,7 @@ namespace ProcessRunner
         /// <summary>
         /// This method gets called to add standard input by calling <see cref="WriteStandardInput"/> if it is set.
         /// </summary>
-        /// <param name="processOptions">A <see cref="ProcessRunner.ProcessOptions"/> object, that contains the options for the process</param>
+        /// <param name="processOptions">A <see cref="ProcessOptions"/> object, that contains the options for the process</param>
         /// <remarks><para>This method will typically be called from <see cref="SetProcessOptions"/> in derived classes.</para></remarks>
         protected void AddStandardInput(ProcessOptions processOptions)
         {
