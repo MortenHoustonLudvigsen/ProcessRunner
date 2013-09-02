@@ -125,7 +125,7 @@ namespace TwoPS.Processes
             {
                 if (_result.Status != ProcessStatus.NotStarted)
                 {
-                    throw new System.Exception("Process has already started");
+                    throw new ProcessRunnerException("Process has already started");
                 }
             }
         }

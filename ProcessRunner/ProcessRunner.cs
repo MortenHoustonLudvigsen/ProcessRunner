@@ -109,7 +109,7 @@ namespace TwoPS.Processes
             {
                 return result;
             }
-            throw new ApplicationException(result.AllOutput);
+            throw new ProcessRunnerException(result.AllOutput);
         }
     }
 }

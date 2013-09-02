@@ -48,6 +48,7 @@
     <Compile Include="ProcessOptions.cs" />
     <Compile Include="ProcessResult.cs" />
     <Compile Include="ProcessRunner.cs" />
+    <Compile Include="ProcessRunnerException.cs" />
     <Compile Include="ProcessRunnerOptions.cs" />
     <Compile Include="ProcessStatus.cs" />
     <Compile Include="ProcessUtils.cs" />
