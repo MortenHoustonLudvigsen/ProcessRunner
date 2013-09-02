@@ -7,7 +7,7 @@
     <ProjectGuid>{3B65704A-E895-440A-9BB2-BF262A3819F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProcessRunner</RootNamespace>
+    <RootNamespace>TwoPS.Processes</RootNamespace>
     <AssemblyName>ProcessRunner</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

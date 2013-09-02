@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace ProcessRunner
+namespace TwoPS.Processes
 {
     /// <summary>
     /// Utility methods

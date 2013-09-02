@@ -5,10 +5,12 @@ VisualStudioVersion = 12.0.20623.1 VSUPREVIEW
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessRunner", "ProcessRunner\ProcessRunner.csproj", "{3B65704A-E895-440A-9BB2-BF262A3819F4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git files", "Git files", "{6A3BC4F8-F76E-4EE7-B66B-999EB263893A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{6A3BC4F8-F76E-4EE7-B66B-999EB263893A}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		LICENSE = LICENSE
+		Pack.cmd = Pack.cmd
+		PackAndPublish.cmd = PackAndPublish.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject

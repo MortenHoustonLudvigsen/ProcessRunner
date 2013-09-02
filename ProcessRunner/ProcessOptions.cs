@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProcessRunner
+namespace TwoPS.Processes
 {
     /// <summary>
     /// Represents options for starting a process

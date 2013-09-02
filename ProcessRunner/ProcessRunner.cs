@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProcessRunner
+namespace TwoPS.Processes
 {
     /// <summary>
     /// Wraps the logic for calling an executable file

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProcessRunner
+namespace TwoPS.Processes
 {
     /// <summary>
     /// Specifies what state the process is in
