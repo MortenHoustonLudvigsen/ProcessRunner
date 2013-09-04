@@ -10,8 +10,9 @@
     <projectUrl>https://github.com/MortenHoustonLudvigsen/ProcessRunner</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes />
+    <releaseNotes>Improved argument quoting</releaseNotes>
     <copyright>Copyright © 2013 Morten Houston Ludvigsen, All Rights Reserved</copyright>
+    <tags>Cmd Program Process CommandLine Exec</tags>
   </metadata>
   <files>
     <file src="..\README.md" target="README.md" />
