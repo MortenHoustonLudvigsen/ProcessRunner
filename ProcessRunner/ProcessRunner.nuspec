@@ -2,15 +2,19 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://raw.github.com/MortenHoustonLudvigsen/ProcessRunner/master/LICENSE</licenseUrl>
+    <licenseUrl>https://raw.github.com/MortenHoustonLudvigsen/ProcessRunner/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/MortenHoustonLudvigsen/ProcessRunner</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes />
     <copyright>Copyright © 2013 Morten Houston Ludvigsen, All Rights Reserved</copyright>
   </metadata>
+  <files>
+    <file src="..\README.md" target="README.md" />
+    <file src="..\LICENSE.txt" target="LICENSE.txt" />
+  </files>
 </package>

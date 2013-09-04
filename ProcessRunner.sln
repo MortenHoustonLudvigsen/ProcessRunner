@@ -8,7 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{6A3BC4F8-F76E-4EE7-B66B-999EB263893A}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		Pack.cmd = Pack.cmd
 		PackAndPublish.cmd = PackAndPublish.cmd
 		README.md = README.md
@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BFE74E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessRunner.Tests", "ProcessRunner.Tests\ProcessRunner.Tests.csproj", "{E771545C-05F9-4F86-9B05-988647EA3D64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{3B65704A-E895-440A-9BB2-BF262A3819F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B65704A-E895-440A-9BB2-BF262A3819F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B65704A-E895-440A-9BB2-BF262A3819F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E771545C-05F9-4F86-9B05-988647EA3D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E771545C-05F9-4F86-9B05-988647EA3D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E771545C-05F9-4F86-9B05-988647EA3D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E771545C-05F9-4F86-9B05-988647EA3D64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

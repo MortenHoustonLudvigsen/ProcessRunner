@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProcessRunner")]
-[assembly: AssemblyDescription("C# library for calling executable files")]
+[assembly: AssemblyTitle("ProcessRunner.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Morten Houston Ludvigsen")]
-[assembly: AssemblyProduct("ProcessRunner")]
-[assembly: AssemblyCopyright("Copyright © 2013 Morten Houston Ludvigsen, All Rights Reserved")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("ProcessRunner.Tests")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("14a02387-9876-48ff-a7b3-b2cf308fbd9b")]
+[assembly: Guid("3537145c-6f4a-4afc-b105-cc0e0d092aae")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.3.*")]
+[assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

@@ -28,14 +28,19 @@ namespace TwoPS.Processes
         }
 
         /// <summary>
+        /// The command line
+        /// </summary>
+        public string CommandLine { get; private set; }
+
+        /// <summary>
         /// The exit code
         /// </summary>
-        public int ExitCode { get; set; }
+        public int ExitCode { get; internal set; }
 
         /// <summary>
         /// The last state of the process
         /// </summary>
-        public ProcessStatus Status { get; set; }
+        public ProcessStatus Status { get; internal set; }
 
         /// <summary>
         /// Specifies whether the process ran successfully
@@ -43,18 +48,6 @@ namespace TwoPS.Processes
         public bool Success
         {
             get { return Status == ProcessStatus.Finished; }
-        }
-
-        private void process_StandardOutputRead(object sender, ProcessEventArgs e)
-        {
-            StandardOutputList.Add(e.Line);
-            AllOutputList.Add(e.Line);
-        }
-
-        private void process_StandardErrorRead(object sender, ProcessEventArgs e)
-        {
-            StandardErrorList.Add(e.Line);
-            AllOutputList.Add(e.Line);
         }
 
         /// <summary>
@@ -96,9 +89,16 @@ namespace TwoPS.Processes
             get { return string.Join(Environment.NewLine, AllOutputList.ToArray()); }
         }
 
-        /// <summary>
-        /// The command line
-        /// </summary>
-        public string CommandLine { get; set; }
+        private void process_StandardOutputRead(object sender, ProcessEventArgs e)
+        {
+            StandardOutputList.Add(e.Line);
+            AllOutputList.Add(e.Line);
+        }
+
+        private void process_StandardErrorRead(object sender, ProcessEventArgs e)
+        {
+            StandardErrorList.Add(e.Line);
+            AllOutputList.Add(e.Line);
+        }
     }
 }

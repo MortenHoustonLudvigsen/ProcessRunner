@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TwoPS.Processes
 {
@@ -100,7 +101,7 @@ namespace TwoPS.Processes
         /// </summary>
         public string Arguments
         {
-            get { return string.Join(" ", _options.ToArray()); }
+            get { return string.Join(" ", _options.Select(o => QuoteArgument(o))); }
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace TwoPS.Processes
         /// </summary>
         public string CommandLine
         {
-            get { return ("\"" + FileName + "\" " + Arguments).Trim(); }
+            get { return (QuoteArgument(FileName) + " " + Arguments).Trim(); }
         }
 
         /// <inheritdoc />
@@ -123,7 +124,7 @@ namespace TwoPS.Processes
         }
 
 
-        private System.Text.StringBuilder _standardInput = new System.Text.StringBuilder();
+        private StringBuilder _standardInput = new StringBuilder();
         /// <summary>
         /// Append text to be sent to the process via standard input
         /// </summary>
@@ -230,10 +231,6 @@ namespace TwoPS.Processes
         {
             if (!string.IsNullOrEmpty(value))
             {
-                if (value.Contains(" "))
-                {
-                    value = "\"" + value + "\"";
-                }
                 _options.Add(value);
                 return true;
             }
@@ -326,6 +323,26 @@ namespace TwoPS.Processes
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Quotes a command line argument, if necessary.
+        /// <para>
+        /// See <a href="http://msdn.microsoft.com/en-us/library/vstudio/system.environment.getcommandlineargs.aspx">Environment.GetCommandLineArgs Method</a>
+        /// </para>
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns>The quoted argument</returns>
+        public static string QuoteArgument(string argument)
+        {
+            if (argument != null && Regex.IsMatch(argument, @"\s|"""))
+            {
+                argument = Regex.Replace(argument, @"(\\+)""", @"$1$1""");
+                argument = Regex.Replace(argument, @"(\\+)$", @"$1$1");
+                argument = Regex.Replace(argument, @"""", @"\""");
+                argument = "\"" + argument + "\"";
+            }
+            return argument;
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace TwoPS.Processes
 {
@@ -92,9 +94,10 @@ namespace TwoPS.Processes
         /// Options specifying what to run
         /// </summary>
         public ProcessOptions Options { get; private set; }
+
         private System.Diagnostics.Process _process;
-        private System.DateTime _endTime;
-        private System.Collections.Generic.Queue<ProcessEventArgs> _events = new System.Collections.Generic.Queue<ProcessEventArgs>();
+        private DateTime _endTime;
+        private Queue<ProcessEventArgs> _events = new Queue<ProcessEventArgs>();
 
         private int _timeout = 0;
         /// <summary>
@@ -189,10 +192,10 @@ namespace TwoPS.Processes
                 _process.Start();
             }
 
-            System.Threading.Thread inputThread = new System.Threading.Thread(new System.Threading.ThreadStart(WriteStandardInput));
+            var inputThread = new Thread(new ThreadStart(WriteStandardInput));
             inputThread.Start();
-            ProcessReader outputReader = new ProcessReader(this, ProcessReader.OutputType.StandardOutput);
-            ProcessReader errorReader = new ProcessReader(this, ProcessReader.OutputType.StandardError);
+            var outputReader = new ProcessReader(this, ProcessReader.OutputType.StandardOutput);
+            var errorReader = new ProcessReader(this, ProcessReader.OutputType.StandardError);
 
             lock (this)
             {
@@ -201,7 +204,7 @@ namespace TwoPS.Processes
 
                 while (!_process.HasExited)
                 {
-                    System.Threading.Monitor.Wait(this, 250);
+                    Monitor.Wait(this, 250);
                     DoEvents();
                     if ((_timeout > 0) && (System.DateTime.Now > _endTime))
                     {
@@ -270,7 +273,7 @@ namespace TwoPS.Processes
             lock (this)
             {
                 _events.Enqueue(eventArgs);
-                System.Threading.Monitor.Pulse(this);
+                Monitor.Pulse(this);
             }
         }
 
@@ -297,15 +300,15 @@ namespace TwoPS.Processes
                     _outputList = _process.Result.StandardErrorList;
                     _eventType = ProcessEventType.StandardErrorRead;
                 }
-                _thread = new System.Threading.Thread(new System.Threading.ThreadStart(Read));
+                _thread = new Thread(new ThreadStart(Read));
                 _thread.Start();
             }
 
             private Process _process;
-            private System.IO.StreamReader _reader;
-            private System.Collections.Generic.List<string> _outputList;
+            private StreamReader _reader;
+            private List<string> _outputList;
             private ProcessEventType _eventType;
-            private System.Threading.Thread _thread;
+            private Thread _thread;
 
             public void Join()
             {
@@ -314,7 +317,7 @@ namespace TwoPS.Processes
 
             public void Read()
             {
-                bool isRunning = true;
+                var isRunning = true;
                 string line;
                 while (isRunning && ((line = _reader.ReadLine()) != null))
                 {
