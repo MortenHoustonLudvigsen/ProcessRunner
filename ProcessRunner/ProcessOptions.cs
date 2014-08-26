@@ -74,6 +74,11 @@ namespace TwoPS.Processes
         /// <summary>
         /// Specifies the encoding of standard output from the process
         /// </summary>
+        public Encoding StandardInputEncoding { get; set; }
+
+        /// <summary>
+        /// Specifies the encoding of standard output from the process
+        /// </summary>
         public Encoding StandardOutputEncoding { get; set; }
 
         /// <summary>

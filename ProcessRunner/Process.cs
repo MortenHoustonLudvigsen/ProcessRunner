@@ -253,8 +253,23 @@ namespace TwoPS.Processes
 
         private void WriteStandardInput()
         {
-            _process.StandardInput.Write(Options.StandardInput);
-            _process.StandardInput.Close();
+            if (Options.StandardInputEncoding != null)
+            {
+                using (var writer = new StreamWriter(_process.StandardInput.BaseStream, Options.StandardInputEncoding))
+                {
+                    WriteStandardInput(writer);
+                }
+            }
+            else
+            {
+                WriteStandardInput(_process.StandardInput);
+            }
+        }
+
+        private void WriteStandardInput(StreamWriter writer)
+        {
+            writer.Write(Options.StandardInput);
+            writer.Close();
         }
 
         private void DoEvents()
