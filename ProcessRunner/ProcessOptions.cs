@@ -21,6 +21,7 @@ namespace TwoPS.Processes
             Timeout = 0;
             LogStandardOutput = true;
             LogStandardError = true;
+            AutoCloseStandardInput = true;
         }
 
         /// <summary>
@@ -59,6 +60,7 @@ namespace TwoPS.Processes
             Timeout = timeout;
             LogStandardOutput = true;
             LogStandardError = true;
+            AutoCloseStandardInput = true;
         }
 
         /// <summary>
@@ -70,6 +72,11 @@ namespace TwoPS.Processes
         /// Specifies whether to log standard error from the process
         /// </summary>
         public bool LogStandardError { get; set; }
+
+        /// <summary>
+        /// Specifies whether to close standard input automatically. Default is true.
+        /// </summary>
+        public bool AutoCloseStandardInput { get; set; }
 
         /// <summary>
         /// Specifies the encoding of standard output from the process

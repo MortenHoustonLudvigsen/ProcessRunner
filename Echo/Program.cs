@@ -17,15 +17,6 @@ namespace Echo
 
         static void Main(string[] args)
         {
-            if (args.Length >= 2 && args[0] == "wait")
-            {
-                int wait;
-                if (int.TryParse(args[1], out wait))
-                {
-                    Thread.Sleep(wait);
-                }
-            }
-
             foreach (var arg in args.Select((a, i) => new { Value = a, Index = i }))
             {
                 Console.WriteLine("args[{0}]: \"{1}\"", arg.Index, arg.Value);

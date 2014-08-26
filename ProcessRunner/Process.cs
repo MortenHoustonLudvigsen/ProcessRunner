@@ -94,10 +94,12 @@ namespace TwoPS.Processes
         /// Options specifying what to run
         /// </summary>
         public ProcessOptions Options { get; private set; }
+        public TextWriter StandardInput { get; private set; }
 
         private System.Diagnostics.Process _process;
         private DateTime _endTime;
         private Queue<ProcessEventArgs> _events = new Queue<ProcessEventArgs>();
+        private StreamWriter _standardInput;
 
         private int _timeout = 0;
         /// <summary>
@@ -153,6 +155,7 @@ namespace TwoPS.Processes
             Options = options;
             _result = new ProcessResult(this, Options.CommandLine);
             _timeout = Options.Timeout;
+            StandardInput = new StandardInputWriter(this);
         }
 
         /// <summary>
@@ -189,6 +192,8 @@ namespace TwoPS.Processes
                     _process.StartInfo.WorkingDirectory = Options.WorkingDirectory;
                 }
 
+                WriteStandardInput();
+
                 if (_result.Status == ProcessStatus.NotStarted)
                 {
                     _result.Status = ProcessStatus.Started;
@@ -202,7 +207,16 @@ namespace TwoPS.Processes
 
             if (_result.Status == ProcessStatus.Started)
             {
-                var inputThread = new Thread(new ThreadStart(WriteStandardInput));
+                if (Options.StandardInputEncoding != null)
+                {
+                    _standardInput = new StreamWriter(_process.StandardInput.BaseStream, Options.StandardInputEncoding);
+                }
+                else
+                {
+                    _standardInput = _process.StandardInput;
+                }
+
+                var inputThread = new Thread(new ThreadStart(() => StandardInput.Flush()));
                 inputThread.Start();
                 var outputReader = new ProcessReader(this, ProcessReader.OutputType.StandardOutput);
                 var errorReader = new ProcessReader(this, ProcessReader.OutputType.StandardError);
@@ -248,6 +262,11 @@ namespace TwoPS.Processes
 
             lock (this)
             {
+                if (Options.StandardInputEncoding != null && _standardInput != null)
+                {
+                    _standardInput.Dispose();
+                }
+                _standardInput = null;
                 _running = false;
             }
 
@@ -271,23 +290,11 @@ namespace TwoPS.Processes
 
         private void WriteStandardInput()
         {
-            if (Options.StandardInputEncoding != null)
+            StandardInput.Write(Options.StandardInput);
+            if (Options.AutoCloseStandardInput)
             {
-                using (var writer = new StreamWriter(_process.StandardInput.BaseStream, Options.StandardInputEncoding))
-                {
-                    WriteStandardInput(writer);
-                }
+                StandardInput.Close();
             }
-            else
-            {
-                WriteStandardInput(_process.StandardInput);
-            }
-        }
-
-        private void WriteStandardInput(StreamWriter writer)
-        {
-            writer.Write(Options.StandardInput);
-            writer.Close();
         }
 
         private void DoEvents()
@@ -307,6 +314,88 @@ namespace TwoPS.Processes
             {
                 _events.Enqueue(eventArgs);
                 Monitor.Pulse(this);
+            }
+        }
+
+        private class StandardInputWriter : TextWriter
+        {
+            public StandardInputWriter(Process process)
+            {
+                _process = process;
+            }
+
+            private Process _process;
+            private List<char> _buffer = new List<char>();
+            private bool _closed = false;
+
+            public override Encoding Encoding
+            {
+                get
+                {
+                    lock (_process)
+                    {
+                        return _process.Options.StandardInputEncoding;
+                    }
+                }
+            }
+
+            public override void Close()
+            {
+                lock (_process)
+                {
+                    if (!_closed)
+                    {
+                        _closed = true;
+                        FlushBuffer();
+                    }
+                }
+            }
+
+            public override void Flush()
+            {
+                lock (_process)
+                {
+                    FlushBuffer();
+                    if (_process._standardInput != null)
+                    {
+                        _process._standardInput.Flush();
+                    }
+                }
+            }
+
+            public void FlushBuffer()
+            {
+                lock (_process)
+                {
+                    if (_process._standardInput != null)
+                    {
+                        if (_buffer.Any())
+                        {
+                            _process._standardInput.Write(_buffer.ToArray());
+                            _buffer.Clear();
+                        }
+                        if (_closed)
+                        {
+                            _process._standardInput.Close();
+                        }
+                    }
+                }
+            }
+
+            public override void Write(char value)
+            {
+                lock (_process)
+                {
+                    if (_process._standardInput == null)
+                    {
+                        _buffer.Add(value);
+                    }
+                    else
+                    {
+                        FlushBuffer();
+                        _process._standardInput.Write(value);
+                    }
+                }
             }
         }
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Extensions;
@@ -126,8 +127,9 @@ namespace TwoPS.Processes.Tests
             // Arrange
             var fixture = new Fixture();
             var process = CreateEchoProcess();
-            process.Options.Add("wait");
-            process.Options.Add(5000);
+            process.Options.AutoCloseStandardInput = false;
+            //process.Options.Add("wait");
+            //process.Options.Add(5000);
 
             // Act
             var task = Task.Run(() => process.Run());
@@ -136,6 +138,37 @@ namespace TwoPS.Processes.Tests
 
             // Assert
             Assert.Equal(ProcessStatus.Cancelled, actual.Status);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(5)]
+        public void EchoWriteStandardInput(int count)
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var lines = count > 0 ? fixture.CreateMany<string>(count) : new string[] { };
+            var process = CreateEchoProcess();
+            process.Options.AutoCloseStandardInput = false;
+            var expected = lines.Select(l => string.Format("Line: \"{0}\"", l));
+            var actual = new List<string>();
+            process.StandardOutputRead += (s, e) => actual.Add(e.Line);
+
+            // Act
+            var task = Task.Run(() => process.Run());
+            foreach (var line in lines)
+            {
+                process.StandardInput.WriteLine(line);
+            }
+            process.StandardInput.Close();
+            var result = task.Result;
+
+            // Assert
+            Assert.Equal(ProcessStatus.Finished, result.Status);
+            Assert.True(result.Success, "Process did not succeed");
+            Assert.Equal(expected, actual);
         }
 
         private static Process CreateEchoProcess()
