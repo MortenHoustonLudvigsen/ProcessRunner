@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/MortenHoustonLudvigsen/ProcessRunner</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Improved finding of executables</releaseNotes>
+    <releaseNotes>Fixed inabillity to cancel a process</releaseNotes>
     <copyright>Copyright © 2013 Morten Houston Ludvigsen, All Rights Reserved</copyright>
     <tags>Cmd Program Process CommandLine Exec</tags>
   </metadata>

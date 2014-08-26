@@ -108,7 +108,7 @@ namespace TwoPS.Processes
             get { return _timeout; }
             set
             {
-                CheckNotStarted();
+                CheckNotRunning();
                 _timeout = value;
             }
         }
@@ -122,11 +122,12 @@ namespace TwoPS.Processes
             get { return _result; }
         }
 
-        private void CheckNotStarted()
+        private bool _running = false;
+        private void CheckNotRunning()
         {
             lock (this)
             {
-                if (_result.Status != ProcessStatus.NotStarted)
+                if (_running)
                 {
                     throw new ProcessRunnerException("Process has already started");
                 }
@@ -162,6 +163,10 @@ namespace TwoPS.Processes
         {
             lock (this)
             {
+                CheckNotRunning();
+
+                _running = true;
+
                 _process = new System.Diagnostics.Process();
                 _process.StartInfo.UseShellExecute = false;
                 _process.StartInfo.RedirectStandardInput = true;
@@ -170,6 +175,7 @@ namespace TwoPS.Processes
                 _process.StartInfo.CreateNoWindow = true;
                 _process.StartInfo.FileName = Options.FileName;
                 _process.StartInfo.Arguments = Options.Arguments;
+
                 if (Options.StandardOutputEncoding != null)
                 {
                     _process.StartInfo.StandardOutputEncoding = Options.StandardOutputEncoding;
@@ -183,55 +189,66 @@ namespace TwoPS.Processes
                     _process.StartInfo.WorkingDirectory = Options.WorkingDirectory;
                 }
 
-                CheckNotStarted();
-
-                _result.Status = ProcessStatus.Started;
-
-                _endTime = System.DateTime.Now.AddSeconds(Timeout);
-
-                _process.Start();
-            }
-
-            var inputThread = new Thread(new ThreadStart(WriteStandardInput));
-            inputThread.Start();
-            var outputReader = new ProcessReader(this, ProcessReader.OutputType.StandardOutput);
-            var errorReader = new ProcessReader(this, ProcessReader.OutputType.StandardError);
-
-            lock (this)
-            {
-                AddEvent(new ProcessEventArgs(ProcessEventType.Started, this));
-                DoEvents();
-
-                while (!_process.HasExited)
+                if (_result.Status == ProcessStatus.NotStarted)
                 {
-                    Monitor.Wait(this, 250);
-                    DoEvents();
-                    if ((_timeout > 0) && (System.DateTime.Now > _endTime))
-                    {
-                        // Not a very nice way to end a process,
-                        // but effective.
-                        _process.Kill();
-                        _result.Status = ProcessStatus.TimedOut;
-                    }
-                    else if (_result.Status == ProcessStatus.Cancelled)
-                    {
-                        _process.Kill();
-                    }
+                    _result.Status = ProcessStatus.Started;
+
+                    _endTime = System.DateTime.Now.AddSeconds(Timeout);
+
+                    _process.Start();
                 }
             }
 
-            _process.WaitForExit();
 
-            outputReader.Join();
-            errorReader.Join();
-            inputThread.Join();
+            if (_result.Status == ProcessStatus.Started)
+            {
+                var inputThread = new Thread(new ThreadStart(WriteStandardInput));
+                inputThread.Start();
+                var outputReader = new ProcessReader(this, ProcessReader.OutputType.StandardOutput);
+                var errorReader = new ProcessReader(this, ProcessReader.OutputType.StandardError);
 
-            DoEvents();
+                lock (this)
+                {
+                    AddEvent(new ProcessEventArgs(ProcessEventType.Started, this));
+                    DoEvents();
 
-            _result.ExitCode = _process.ExitCode;
+                    while (!_process.HasExited)
+                    {
+                        Monitor.Wait(this, 250);
+                        DoEvents();
+                        if ((_timeout > 0) && (System.DateTime.Now > _endTime))
+                        {
+                            // Not a very nice way to end a process,
+                            // but effective.
+                            _process.Kill();
+                            _result.Status = ProcessStatus.TimedOut;
+                        }
+                        else if (_result.Status == ProcessStatus.Cancelled)
+                        {
+                            _process.Kill();
+                        }
+                    }
+                }
+
+                _process.WaitForExit();
+
+                outputReader.Join();
+                errorReader.Join();
+                inputThread.Join();
+
+                DoEvents();
+
+                _result.ExitCode = _process.ExitCode;
+            }
+
             if (_result.Status == ProcessStatus.Started)
             {
                 _result.Status = ProcessStatus.Finished;
+            }
+
+            lock (this)
+            {
+                _running = false;
             }
 
             return _result;
@@ -244,9 +261,10 @@ namespace TwoPS.Processes
         {
             lock (this)
             {
-                if (_result.Status == ProcessStatus.Started)
+                if (_result.Status == ProcessStatus.NotStarted || _result.Status == ProcessStatus.Started)
                 {
                     _result.Status = ProcessStatus.Cancelled;
+                    Monitor.Pulse(this);
                 }
             }
         }

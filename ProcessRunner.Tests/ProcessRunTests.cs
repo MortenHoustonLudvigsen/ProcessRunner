@@ -11,21 +11,6 @@ namespace TwoPS.Processes.Tests
 {
     public class ProcessRunTests
     {
-        [Fact]
-        public void EchoEmpty()
-        {
-            // Arrange
-            var process = CreateEchoProcess();
-
-            var expected = new List<string> { };
-
-            // Act
-            var actual = process.Run();
-
-            // Assert
-            Assert.Equal(expected, actual.StandardOutputList);
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
@@ -108,6 +93,49 @@ namespace TwoPS.Processes.Tests
 
             // Assert
             Assert.Equal(expected, actual.StandardOutputList);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(5)]
+        public void AsyncEchoLines(int count)
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var lines = count > 0 ? fixture.CreateMany<string>(count) : new string[] { };
+            var process = CreateEchoProcess();
+            process.Options.StandardInputAppendLines(lines);
+            var expected = lines.Select(l => string.Format("Line: \"{0}\"", l));
+            var actual = new List<string>();
+            process.StandardOutputRead += (s, e) => actual.Add(e.Line);
+
+            // Act
+            var result = Task.Run(() => process.Run()).Result;
+
+            // Assert
+            Assert.Equal(ProcessStatus.Finished, result.Status);
+            Assert.True(result.Success, "Process did not succeed");
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void AsyncEchoCancelled()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var process = CreateEchoProcess();
+            process.Options.Add("wait");
+            process.Options.Add(5000);
+
+            // Act
+            var task = Task.Run(() => process.Run());
+            process.Cancel();
+            var actual = task.Result;
+
+            // Assert
+            Assert.Equal(ProcessStatus.Cancelled, actual.Status);
         }
 
         private static Process CreateEchoProcess()

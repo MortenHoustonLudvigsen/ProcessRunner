@@ -2,18 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Echo
 {
     class Program
     {
-        static void Main(string[] args)
+        static Program()
         {
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
+        }
 
-            foreach (var arg in args.Select((a, i) => new { Value = a, Index = i}))
+        static void Main(string[] args)
+        {
+            if (args.Length >= 2 && args[0] == "wait")
+            {
+                int wait;
+                if (int.TryParse(args[1], out wait))
+                {
+                    Thread.Sleep(wait);
+                }
+            }
+
+            foreach (var arg in args.Select((a, i) => new { Value = a, Index = i }))
             {
                 Console.WriteLine("args[{0}]: \"{1}\"", arg.Index, arg.Value);
             }
