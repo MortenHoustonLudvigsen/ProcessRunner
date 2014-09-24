@@ -356,7 +356,7 @@ namespace TwoPS.Processes
                 lock (_process)
                 {
                     FlushBuffer();
-                    if (_process._standardInput != null)
+                    if (!_closed && _process._standardInput != null)
                     {
                         _process._standardInput.Flush();
                     }
