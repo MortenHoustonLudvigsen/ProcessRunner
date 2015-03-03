@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +19,7 @@ namespace TwoPS.Processes
         /// </summary>
         public ProcessOptions()
         {
+            EnvironmentVariables = new Dictionary<string, string>();
             Timeout = 0;
             LogStandardOutput = true;
             LogStandardError = true;
@@ -51,6 +53,7 @@ namespace TwoPS.Processes
         /// <param name="arguments">A number of arguments to add to the command line</param>
         /// <param name="timeout">The timeout for the process</param>
         public ProcessOptions(string fileName, IEnumerable<string> arguments, int timeout)
+            : this()
         {
             FileName = fileName;
             foreach (string argument in arguments)
@@ -58,10 +61,13 @@ namespace TwoPS.Processes
                 Add(argument);
             }
             Timeout = timeout;
-            LogStandardOutput = true;
-            LogStandardError = true;
-            AutoCloseStandardInput = true;
         }
+
+        /// <summary>
+        /// Gets search paths for files, directories for temporary files, application-specific
+        /// options, and other similar information.
+        /// </summary>
+        public Dictionary<string, string> EnvironmentVariables { get; private set; }
 
         /// <summary>
         /// Specifies whether to log standard output from the process

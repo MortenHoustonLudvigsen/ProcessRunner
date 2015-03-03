@@ -27,6 +27,19 @@ namespace TwoPS.Processes
         /// </summary>
         public event EventHandler<ProcessEventArgs> StandardErrorRead;
 
+        /// <summary>
+        /// An event is raised when the start info for the process is created
+        /// </summary>
+        public event EventHandler<StartInfoCreatedEventArgs> StartInfoCreated;
+
+        private void OnStartInfoCreated(StartInfoCreatedEventArgs eventArgs)
+        {
+            if (StartInfoCreated != null)
+            {
+                StartInfoCreated(this, eventArgs);
+            }
+        }
+
         private void OnEvent(ProcessEventArgs eventArgs)
         {
             switch (eventArgs.EventType)
@@ -158,6 +171,43 @@ namespace TwoPS.Processes
             StandardInput = new StandardInputWriter(this);
         }
 
+        protected virtual System.Diagnostics.ProcessStartInfo GetStartInfo()
+        {
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                FileName = Options.FileName,
+                Arguments = Options.Arguments
+            };
+            foreach (var env in Options.EnvironmentVariables)
+            {
+                startInfo.EnvironmentVariables[env.Key] = env.Value;
+            }
+
+            if (Options.StandardOutputEncoding != null)
+            {
+                startInfo.StandardOutputEncoding = Options.StandardOutputEncoding;
+            }
+
+            if (Options.StandardErrorEncoding != null)
+            {
+                startInfo.StandardErrorEncoding = Options.StandardErrorEncoding;
+            }
+
+            if (!string.IsNullOrEmpty(Options.WorkingDirectory))
+            {
+                startInfo.WorkingDirectory = Options.WorkingDirectory;
+            }
+
+            OnStartInfoCreated(new StartInfoCreatedEventArgs(this, startInfo));
+
+            return startInfo;
+        }
+
         /// <summary>
         /// Runs the executable file
         /// </summary>
@@ -170,27 +220,10 @@ namespace TwoPS.Processes
 
                 _running = true;
 
-                _process = new System.Diagnostics.Process();
-                _process.StartInfo.UseShellExecute = false;
-                _process.StartInfo.RedirectStandardInput = true;
-                _process.StartInfo.RedirectStandardOutput = true;
-                _process.StartInfo.RedirectStandardError = true;
-                _process.StartInfo.CreateNoWindow = true;
-                _process.StartInfo.FileName = Options.FileName;
-                _process.StartInfo.Arguments = Options.Arguments;
-
-                if (Options.StandardOutputEncoding != null)
+                _process = new System.Diagnostics.Process
                 {
-                    _process.StartInfo.StandardOutputEncoding = Options.StandardOutputEncoding;
-                }
-                if (Options.StandardErrorEncoding != null)
-                {
-                    _process.StartInfo.StandardErrorEncoding = Options.StandardErrorEncoding;
-                }
-                if (!string.IsNullOrEmpty(Options.WorkingDirectory))
-                {
-                    _process.StartInfo.WorkingDirectory = Options.WorkingDirectory;
-                }
+                    StartInfo = GetStartInfo()
+                };
 
                 WriteStandardInput();
 
