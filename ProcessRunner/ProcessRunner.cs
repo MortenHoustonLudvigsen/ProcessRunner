@@ -26,6 +26,18 @@ namespace TwoPS.Processes
         public event EventHandler<ProcessEventArgs> StandardErrorRead;
 
         /// <summary>
+        /// An event is raised when the start info for the process is created
+        /// </summary>
+        public event EventHandler<StartInfoCreatedEventArgs> StartInfoCreated;
+        private void OnStartInfoCreated(object sender, StartInfoCreatedEventArgs eventArgs)
+        {
+            if (StartInfoCreated != null)
+            {
+                StartInfoCreated(sender, eventArgs);
+            }
+        }
+
+        /// <summary>
         /// The executable file
         /// </summary>
         protected string ExeFile { get; private set; }
@@ -101,6 +113,7 @@ namespace TwoPS.Processes
             var processOptions = CreateProcessOptions();
             options.SetProcessRunnerOptions(processOptions);
             var process = new Process(processOptions);
+            process.StartInfoCreated += new EventHandler<StartInfoCreatedEventArgs>(OnStartInfoCreated);
             process.Started += new EventHandler<ProcessEventArgs>(OnEvent);
             process.StandardOutputRead += new EventHandler<ProcessEventArgs>(OnEvent);
             process.StandardErrorRead += new EventHandler<ProcessEventArgs>(OnEvent);
