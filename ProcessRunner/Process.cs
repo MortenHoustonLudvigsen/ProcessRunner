@@ -107,6 +107,10 @@ namespace TwoPS.Processes
         /// Options specifying what to run
         /// </summary>
         public ProcessOptions Options { get; private set; }
+
+        /// <summary>
+        /// A <see cref="TextWriter"/>, that can be used to write text to standard input for the process
+        /// </summary>
         public TextWriter StandardInput { get; private set; }
 
         private System.Diagnostics.Process _process;
@@ -171,6 +175,10 @@ namespace TwoPS.Processes
             StandardInput = new StandardInputWriter(this);
         }
 
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.ProcessStartInfo"/> for the process.
+        /// </summary>
+        /// <returns>The <see cref="System.Diagnostics.ProcessStartInfo"/> for the process</returns>
         protected virtual System.Diagnostics.ProcessStartInfo GetStartInfo()
         {
             var startInfo = new System.Diagnostics.ProcessStartInfo
