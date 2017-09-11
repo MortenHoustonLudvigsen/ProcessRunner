@@ -96,10 +96,6 @@ namespace TwoPS.Processes
         {
             Process process = new Process(fileName, arguments);
             process.Timeout = timeout;
-            process.Started += new EventHandler<ProcessEventArgs>(delegate(object sender, ProcessEventArgs e)
-            {
-                e.Process.Cancel();
-            });
             return process.Run();
         }
 
