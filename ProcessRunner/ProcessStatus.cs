@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TwoPS.Processes
+﻿namespace TwoPS.Processes
 {
     /// <summary>
     /// Specifies what state the process is in
