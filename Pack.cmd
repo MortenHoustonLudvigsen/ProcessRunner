@@ -7,4 +7,4 @@ set NuGet=%~dp0.nuget\nuget.exe
 
 rmdir /Q /S NuGetPackages
 mkdir NuGetPackages
-%NuGet% pack ProcessRunner\ProcessRunner.csproj -Build -Properties "Configuration=Release" -Symbols -OutputDirectory NuGetPackages
+"%NuGet%" pack ProcessRunner\ProcessRunner.csproj -Build -Properties "Configuration=Release" -Symbols -OutputDirectory NuGetPackages

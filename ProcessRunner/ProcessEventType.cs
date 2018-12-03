@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TwoPS.Processes
+﻿namespace TwoPS.Processes
 {
     /// <summary>
     /// The types of process events
